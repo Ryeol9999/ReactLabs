@@ -1,0 +1,24 @@
+import { useState } from 'react'
+import './App.css'
+
+function App() {
+  const [inputValue, setInputValue] = useState('')
+
+  const handleChange = (e) => {
+      setInputValue(e.target.value);
+  }
+  const handleSubmit = () =>{
+    alert("inputValue :" +inputValue)
+    setInputValue('');
+  }
+  return (
+    <div className='App'>
+      <h3>useInput</h3>
+      <input type={inputValue} onChange={handleChange} />
+
+      <button onClick={handleSubmit}>버튼</button>
+    </div>
+  )
+}
+
+export default App
