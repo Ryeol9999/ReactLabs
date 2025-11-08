@@ -1,0 +1,129 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+.modal-card {
+  width: min(420px, 100%);
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 22px 44px rgba(15, 23, 42, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: modal-pop 0.28s ease;
+}
+
+.modal-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.modal-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(37, 99, 235, 0.14);
+  font-size: 22px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.modal-description {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.modal-input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-button {
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: #f9fafb;
+  color: #374151;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.modal-button:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.18);
+}
+
+.modal-button--primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.modal-button--primary:hover {
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.25);
+}
+
+@keyframes modal-pop {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

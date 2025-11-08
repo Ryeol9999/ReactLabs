@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8090/api/chat";
+const BASE_URL = "http://192.168.2.22:8090/api/chat";;
 
 // ✅ 전체 방 목록 조회
 export const getRooms = async () => {

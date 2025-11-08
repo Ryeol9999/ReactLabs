@@ -1,0 +1,7 @@
+.nickname-modal .modal-description strong {
+  color: #1d4ed8;
+}
+
+.nickname-modal .modal-input[type="password"] {
+  letter-spacing: 0.08em;
+}

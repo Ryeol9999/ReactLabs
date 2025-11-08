@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
-import { deleteRoom, getMessagesByRoomId } from "../api/chatApi"; // ✅ 추가
+import { deleteRoom, getMessagesByRoomId } from "../api/chatApi";
+import "./ChatRoom.css";
 
 let stompClient = null;
 
@@ -31,7 +32,6 @@ const ChatRoom = () => {
     const fetchMessages = async () => {
       try {
         const data = await getMessagesByRoomId(roomId);
-        console.log("📜 기존 메시지:", data);
         setChatList(data);
       } catch (err) {
         console.error("❌ 메시지 로드 실패:", err);
@@ -42,15 +42,13 @@ const ChatRoom = () => {
   }, [roomId]);
 
   useEffect(() => {
-    console.log("Opening Web Socket...");
-    const socket = new SockJS("http://localhost:8090/ws/chat");
+    const socket = new SockJS("http://192.168.2.22:8090/ws/chat");
     socketRef.current = socket;
     stompClient = over(socket);
 
     stompClient.connect(
       {},
       () => {
-        console.log("✅ WebSocket 연결 성공");
         setConnected(true);
 
         stompClient.subscribe(`/sub/chat/room/${roomId}`, (msg) => {
@@ -84,9 +82,7 @@ const ChatRoom = () => {
             message: `${nickname}님이 퇴장했습니다.`,
           })
         );
-        stompClient.disconnect(() => {
-          console.log("🔴 WebSocket 종료");
-        });
+        stompClient.disconnect();
       });
     };
   }, [roomId, nickname]);
@@ -117,7 +113,6 @@ const ChatRoom = () => {
 
   const handleExit = () => navigate("/");
 
-  // ✅ 방 삭제 함수
   const handleDeleteRoom = async () => {
     const password = prompt("삭제 비밀번호를 입력하세요:");
     if (!password) return;
@@ -125,7 +120,7 @@ const ChatRoom = () => {
     try {
       const result = await deleteRoom(roomId, password);
       alert(result);
-      navigate("/"); // 목록으로 이동
+      navigate("/");
     } catch (err) {
       console.error("방 삭제 실패:", err);
       alert("❌ 방 삭제 중 오류가 발생했습니다.");
@@ -133,65 +128,68 @@ const ChatRoom = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-5 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-3">💬 Room #{roomId}</h2>
-      <div className="text-gray-500 mb-3">닉네임: {nickname}</div>
-
-      {/* 채팅창 */}
-      <div
-        ref={chatBoxRef}
-        className="border w-full h-96 rounded p-3 overflow-y-auto bg-white shadow-inner"
-      >
-        {chatList.map((chat, idx) => (
-          <div key={idx} className="mb-2">
-            {chat.sender === "System" ? (
-              <p className="text-center text-sm text-gray-400 italic">
-                {chat.message}
-              </p>
-            ) : (
-              <p>
-                <strong>{chat.sender}: </strong>
-                {chat.message}
-              </p>
-            )}
+    <div className="chat-room-page">
+      <div className="chat-room-shell">
+        <header className="chat-room-header">
+          <div className="chat-room-heading">
+            <p className="chat-room-subtitle">Room #{roomId}</p>
+            <h2 className="chat-room-title">{nickname}님의 채팅 공간</h2>
           </div>
-        ))}
-      </div>
+          <div className="chat-room-controls">
+            <button className="chat-room-button" type="button" onClick={handleExit}>
+              나가기
+            </button>
+            <button
+              className="chat-room-button chat-room-button--danger"
+              type="button"
+              onClick={handleDeleteRoom}
+            >
+              방 삭제
+            </button>
+          </div>
+        </header>
 
-      {/* 입력창 */}
-      <div className="flex w-full mt-3">
-        <input
-          type="text"
-          className="flex-1 border rounded-l p-2"
-          placeholder="메시지를 입력하세요..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button
-          onClick={sendMessage}
-          className="bg-blue-500 text-white px-4 rounded-r hover:bg-blue-600"
-        >
-          전송
-        </button>
-      </div>
+        <section className="chat-room-messages" ref={chatBoxRef}>
+          {chatList.map((chat, idx) => {
+            if (chat.sender === "System") {
+              return (
+                <p key={`system-${idx}`} className="chat-room-system">
+                  {chat.message}
+                </p>
+              );
+            }
 
-      {/* 버튼 그룹 */}
-      <div className="flex gap-3 mt-4">
-        <button
-          onClick={handleExit}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-        >
-          나가기
-        </button>
+            const isMine = chat.sender === nickname;
+            return (
+              <div
+                key={`${chat.sender}-${idx}`}
+                className={`chat-room-message ${isMine ? "chat-room-message--me" : ""}`}
+              >
+                <span className="chat-room-message__sender">{chat.sender}</span>
+                <span className="chat-room-message__bubble">{chat.message}</span>
+              </div>
+            );
+          })}
+        </section>
 
-        {/* ✅ 방 삭제 버튼 */}
-        <button
-          onClick={handleDeleteRoom}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          방 삭제
-        </button>
+        <div className="chat-room-input">
+          <input
+            type="text"
+            className="chat-room-field"
+            placeholder="메시지를 입력하세요..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button
+            className="chat-room-send"
+            type="button"
+            onClick={sendMessage}
+            disabled={!connected}
+          >
+            전송
+          </button>
+        </div>
       </div>
     </div>
   );
