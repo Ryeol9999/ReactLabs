@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "./Modal.css";
+import "./CreateRoomModal.css";
 
 const CreateRoomModal = ({ onClose, onCreate }) => {
   const [roomName, setRoomName] = useState("");
@@ -7,56 +9,81 @@ const CreateRoomModal = ({ onClose, onCreate }) => {
 
   const handleCreate = () => {
     if (!roomName.trim()) return alert("방 이름을 입력하세요!");
-    if (!enterPassword.trim() || !deletePassword.trim())
-      return alert("비밀번호를 모두 입력하세요!");
+    if (!enterPassword.trim() || !deletePassword.trim()) {
+      alert("비밀번호를 모두 입력하세요!");
+      return;
+    }
+
     onCreate({
       roomName,
-      enterPassword: parseInt(enterPassword),
-      deletePassword: parseInt(deletePassword),
+      enterPassword: parseInt(enterPassword, 10),
+      deletePassword: parseInt(deletePassword, 10),
     });
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div className="bg-white rounded-lg p-6 shadow-lg w-80">
-        <h2 className="text-lg font-bold mb-3 text-center">🆕 새 채팅방 생성</h2>
+    <div className="modal-backdrop" role="dialog" aria-modal="true">
+      <div className="modal-card">
+        <header className="modal-header">
+          <span className="modal-icon" aria-hidden>
+            🆕
+          </span>
+          <div>
+            <h2 className="modal-title">새 채팅방 생성</h2>
+            <p className="modal-description">
+              서로 다른 입장/삭제 비밀번호를 설정해 안전하게 관리하세요.
+            </p>
+          </div>
+        </header>
 
-        <input
-          type="text"
-          placeholder="방 이름"
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-          className="border w-full p-2 mb-3 rounded"
-        />
+        <div className="modal-body">
+          <label className="modal-label" htmlFor="roomName">
+            방 이름
+          </label>
+          <input
+            id="roomName"
+            type="text"
+            className="modal-input"
+            placeholder="예: 프로젝트 논의방"
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+          />
 
-        <input
-          type="number"
-          placeholder="입장 비밀번호 (숫자)"
-          value={enterPassword}
-          onChange={(e) => setEnterPassword(e.target.value)}
-          className="border w-full p-2 mb-3 rounded"
-        />
+          <label className="modal-label" htmlFor="enterPassword">
+            입장 비밀번호
+          </label>
+          <input
+            id="enterPassword"
+            type="number"
+            className="modal-input"
+            placeholder="숫자 비밀번호"
+            value={enterPassword}
+            onChange={(e) => setEnterPassword(e.target.value)}
+          />
 
-        <input
-          type="number"
-          placeholder="삭제 비밀번호 (숫자)"
-          value={deletePassword}
-          onChange={(e) => setDeletePassword(e.target.value)}
-          className="border w-full p-2 mb-4 rounded"
-        />
+          <label className="modal-label" htmlFor="deletePassword">
+            삭제 비밀번호
+          </label>
+          <input
+            id="deletePassword"
+            type="number"
+            className="modal-input"
+            placeholder="숫자 비밀번호"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+          />
+        </div>
 
-        <div className="flex justify-between">
-          <button
-            onClick={handleCreate}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          >
-            생성
+        <div className="modal-actions">
+          <button className="modal-button" type="button" onClick={onClose}>
+            닫기
           </button>
           <button
-            onClick={onClose}
-            className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+            className="modal-button modal-button--primary"
+            type="button"
+            onClick={handleCreate}
           >
-            닫기
+            생성하기
           </button>
         </div>
       </div>
@@ -65,4 +92,3 @@ const CreateRoomModal = ({ onClose, onCreate }) => {
 };
 
 export default CreateRoomModal;
-

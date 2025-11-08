@@ -1,0 +1,13 @@
+.modal-card .modal-input[type="number"]::-webkit-outer-spin-button,
+.modal-card .modal-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.modal-card .modal-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.modal-card .modal-description {
+  color: #475569;
+}
