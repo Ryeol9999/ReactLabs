@@ -42,7 +42,7 @@ const ChatRoom = () => {
   }, [roomId]);
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8090/ws/chat");
+    const socket = new SockJS("http://192.168.2.22:8090/ws/chat");
     socketRef.current = socket;
     stompClient = over(socket);
 
