@@ -1,0 +1,39 @@
+import React, { useState } from 'react';
+import { login } from '../api/auth';
+import {useNavigate} from 'react-router-dom';
+
+const LoginForm = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try{
+            const response = await login({username, password});
+            //서버쪽에서 응답한 데이터 response jwt 서버에서 발급한
+            localStorage.setItem('token', response.data);
+            navigate('/info');
+        }catch (error){
+            alert('로그인 실패 ' + error.response);
+
+        }
+    }
+    return (
+       <form onSubmit={handleLogin} style={{ padding: '20px' }}>
+      <h2>로그인</h2>
+      <div>
+        <label>ID: </label>
+        <input value={username} onChange={(e) => setUsername(e.target.value)} required />
+      </div>
+      <div>
+        <label>PW: </label>
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      </div>
+      <button type="submit">로그인</button>
+    </form>
+    );
+};
+
+export default LoginForm;
